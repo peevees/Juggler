@@ -10,17 +10,29 @@ public class BallMovement : MonoBehaviour {
     public int track;
     public int direction;
     public GameObject gameOver;
+    public AudioClip catchSound;
+    public AudioClip[] moveSounds;
+    public AudioClip crushSound;
+    public GameObject leftCrash;
+    public GameObject rightCrash;
 
+    private int soundChange = 0;
+    private AudioSource source;
     private GameObject aPosition;
     private float timer = 1f;
     private static bool inPlay = true;
     private bool firstStart = true;
+    private float newTime = 1f;
 
     public bool InPlay(bool value)
     {
             return inPlay = value;
     }
 
+    private void Awake()
+    {
+        source = GetComponent<AudioSource>();
+    }
     void Start()
     {
 
@@ -33,10 +45,38 @@ public class BallMovement : MonoBehaviour {
         timer = timer - Time.deltaTime;
         if (inPlay == true && timer < 0) {
             changePosition();
-            timer = 1f;
+            timer = newTime;            
         }
         //Debug.Log(direction);
 	}
+    public void playSound(int soundToPlay)
+    {
+        if (soundChange >=3)
+        {
+            soundChange = 0;
+        }
+        switch (soundToPlay)
+        {
+            case 1:
+                source.PlayOneShot(catchSound, 1f);
+                break;
+            case 2:
+                source.PlayOneShot(crushSound, 1f);
+                break;
+            default:
+                source.PlayOneShot(moveSounds[soundChange], 1f);
+                soundChange++;
+                break;
+        }
+        
+        //source.PlayOneShot(moveSound, 1f);
+    }
+    IEnumerator playAndInactivate()
+    {
+        playSound(2);
+        yield return new WaitForSeconds(crushSound.length);
+        gameObject.SetActive(false);
+    }
 
     void changePosition(){
         Debug.Log(timer);
@@ -98,13 +138,18 @@ public class BallMovement : MonoBehaviour {
             if (gameManager.GetPlayerPos() == track)
             {
                 //Debug.Log("Left Hand caught the ball");
+                playSound(1);
                 gameManager.addPoint();
+                newTime = gameManager.addSpeed();
                 gameManager.setScoreText();
                 return false;
             }else
             {
+                gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                leftCrash.SetActive(true);
+                StartCoroutine(playAndInactivate());
+                
                 InPlay(false);
-                gameObject.SetActive(false);
                 //the ball object is removed and the crashed ball sprite is to be shown
                 //Debug.Log("Left Hand missed the ball");
                 gameOver.SetActive(true);
@@ -116,14 +161,18 @@ public class BallMovement : MonoBehaviour {
             if (gameManager.GetPlayerPos() == (2-track))
             {
                 //Debug.Log("Right Hand caught the ball");
+                playSound(1);
                 gameManager.addPoint();
+                newTime = gameManager.addSpeed();
                 gameManager.setScoreText();
                 return false;
             }
             else
             {
+                gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                rightCrash.SetActive(true);
+                StartCoroutine(playAndInactivate());
                 InPlay(false);
-                gameObject.SetActive(false);
                 //the ball object is removed and the crashed ball sprite is to be shown
                 //Debug.Log("Right Hand missed the ball");
                 gameOver.SetActive(true);
@@ -132,6 +181,7 @@ public class BallMovement : MonoBehaviour {
         }
         else
         {
+            playSound(0);
             //Debug.Log("ball is middle, meh!");
             return false;
         }

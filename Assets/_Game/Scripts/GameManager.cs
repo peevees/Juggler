@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour {
     public Button game2;
     public static GameManager instance = null;
     
-
     private Button game1Button;
     private Button game2Button;
     private System.DateTime timeunformat;
@@ -26,6 +25,7 @@ public class GameManager : MonoBehaviour {
     private bool clock;
     private Scene scene;
     private int score = 0;
+    private float speed = 1f;
 
     // Use this for initialization
     void Start(){
@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour {
     }
     void Awake()
     {
+        
         //Check if instance already exists
         if (instance == null) { 
 
@@ -106,8 +107,6 @@ public class GameManager : MonoBehaviour {
             score++;
         }else if (scene.name == "GameScene2")
         {
-
-            //TODO check this weird not incrementing
             score += 10;
         }
         
@@ -168,11 +167,33 @@ public class GameManager : MonoBehaviour {
     public int BallLocation(){
         return ballMovement.currentPos;
     }
+    public float addSpeed()
+    {
+        if (scene.name == "GameScene")
+        {
+            if (score % 5 == 0)
+            {
+                speed = speed - 0.1f;
+            }
+        }
+        else if (scene.name == "GameScene2")
+        {
+            if (score % 50 == 0)
+            {
+                speed = speed - 0.1f;
+            }
+        }
+        else
+        {
+            speed = 1f;
+        }
+            return speed;
+    }
 
     //TODO 
-    //score left add and speed
-    //use timer to control speed
-    //add score for successful "juggling"
+    
+    
+    
     //refine controls
     //add other game mode?
     //refine scene loading
