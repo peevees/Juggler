@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour {
     private float timer = 1f;
     private bool clock;
     private Scene scene;
+    private int score = 0;
 
     // Use this for initialization
     void Start(){
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour {
         {
             Debug.Log("scene is: " + scene.name);
             playerMovement.SetIsAi(false);
+            setScoreText();
         }
         
 
@@ -97,8 +99,22 @@ public class GameManager : MonoBehaviour {
         }
 
     }
+    public void addPoint()
+    {
+        if (scene.name == "GameScene")
+        {
+            score++;
+        }else if (scene.name == "GameScene2")
+        {
+
+            //TODO check this weird not incrementing
+            score += 10;
+        }
+        
+    }
     public void LoadScene()
     {
+        SceneManager.UnloadSceneAsync("Main_Menu");
         SceneManager.LoadSceneAsync("GameScene", LoadSceneMode.Single);
         scoreText.text = "";
     }
@@ -130,7 +146,14 @@ public class GameManager : MonoBehaviour {
     
     public void setScoreText()
     {
-        scoreText.text = time;
+        if (scene.name == "Main_menu")
+        {
+            scoreText.text = time;
+        }else
+        {
+            scoreText.text = score.ToString();
+        }
+        
     }
     public void getTime()
     {

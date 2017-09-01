@@ -98,6 +98,8 @@ public class BallMovement : MonoBehaviour {
             if (gameManager.GetPlayerPos() == track)
             {
                 //Debug.Log("Left Hand caught the ball");
+                gameManager.addPoint();
+                gameManager.setScoreText();
                 return false;
             }else
             {
@@ -114,6 +116,8 @@ public class BallMovement : MonoBehaviour {
             if (gameManager.GetPlayerPos() == (2-track))
             {
                 //Debug.Log("Right Hand caught the ball");
+                gameManager.addPoint();
+                gameManager.setScoreText();
                 return false;
             }
             else
