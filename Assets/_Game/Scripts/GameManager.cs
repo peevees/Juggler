@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour {
     public Button game1;
     public Button game2;
     public static GameManager instance = null;
+    public AnimationCurve speedCurve;
     
     private Button game1Button;
     private Button game2Button;
@@ -173,14 +174,30 @@ public class GameManager : MonoBehaviour {
         {
             if (score % 5 == 0)
             {
-                speed = speed - 0.1f;
+                if (speed >= 0.3)
+                {
+                    speed = speed - speedCurve.Evaluate(score / 100f);
+                    Debug.Log("speed is: " + speed);
+                }
+                else
+                {
+                    speed = 1f;
+                }
             }
         }
         else if (scene.name == "GameScene2")
         {
             if (score % 50 == 0)
             {
-                speed = speed - 0.1f;
+                if (speed >= 0.3)
+                {
+                    speed = speed - speedCurve.Evaluate(score / 100f);
+                    Debug.Log("speed is: " + speed);
+                }
+                else
+                {
+                    speed = 1f;
+                }
             }
         }
         else

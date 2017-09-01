@@ -79,7 +79,7 @@ public class BallMovement : MonoBehaviour {
     }
 
     void changePosition(){
-        Debug.Log(timer);
+        //Debug.Log(timer);
         if (firstStart == false)
         {
             checkCollision();

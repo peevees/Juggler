@@ -33,9 +33,9 @@ public class PlayerMovement : MonoBehaviour
     public void MoveArms(int direction)
     {
             Arms[currentActive].SetActive(false);
-            Debug.Log(currentActive);
+            //Debug.Log(currentActive);
             currentActive += direction;
-            Debug.Log(currentActive);
+            //Debug.Log(currentActive);
             switch (currentActive)
             {
                 case 0:
