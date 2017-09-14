@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour {
     public GameObject ballMiddle;
     public GameObject ballNearest;
     public Text scoreText;
+    public Text highScoreText;
+    public Text highScoreText2;
     public Button game1;
     public Button game2;
     public static GameManager instance = null;
@@ -26,14 +28,21 @@ public class GameManager : MonoBehaviour {
     private bool clock;
     private Scene scene;
     private int score = 0;
+    private int highScore;
+    private int highScore2;
     private float speed = 1f;
 
     // Use this for initialization
     void Start(){
-
+        //PlayerPrefs.DeleteAll();//erases all prefs
+        highScore = PlayerPrefs.GetInt("High Score");
+        highScore2 = PlayerPrefs.GetInt("High Score2");
+        //TODO under construction save+ score to preferences 
         scene = SceneManager.GetActiveScene();
         if (scene.name == "Main_menu")
         {
+            setHighScoreText();
+            setHighScoreText2();
             playerMovement.SetIsAi(true);
             timeunformat = new System.DateTime();
             getTime();
@@ -131,19 +140,49 @@ public class GameManager : MonoBehaviour {
     {
         if(SceneManager.GetActiveScene().name == "GameScene")
         {
+            setHighScore();
             SceneManager.UnloadSceneAsync("GameScene");
         }else if (SceneManager.GetActiveScene().name == "GameScene2")
         {
+            setHighScore2();
             SceneManager.UnloadSceneAsync("GameScene2");
         }
-        
-        
+
         SceneManager.LoadSceneAsync("Main_Menu", LoadSceneMode.Single);
         ballMovement.InPlay(true);
         playerMovement.SetIsAi(true);
         scoreText.text = "";
     }
-    
+
+    //HACK
+    public void setHighScore()
+    {
+        if(score > highScore)
+        {
+            Debug.Log("score is: " + score + "HighScore is: " + highScore);
+            highScore = score;
+            Debug.Log("highscore is now: " + highScore);
+            PlayerPrefs.SetInt("High Score", highScore);
+        }    
+    }
+    public void setHighScore2()
+    {
+        if (score > highScore2)
+        {
+            Debug.Log("score is: " + score + "HighScore is: " + highScore2);
+            highScore2 = score;
+            Debug.Log("highscore is now: " + highScore2);
+            PlayerPrefs.SetInt("High Score2", highScore2);
+        }
+    }
+    public void setHighScoreText()
+    {
+        highScoreText.text = "High Score: " + highScore.ToString();
+    }
+    public void setHighScoreText2()
+    {
+        highScoreText2.text = "High Score: " + highScore2.ToString();
+    }
     public void setScoreText()
     {
         if (scene.name == "Main_menu")
@@ -206,12 +245,4 @@ public class GameManager : MonoBehaviour {
         }
             return speed;
     }
-
-    //TODO 
-    
-    
-    
-    //refine controls
-    //add other game mode?
-    //refine scene loading
 }
